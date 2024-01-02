@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Document</title>
+</head>
+<body>
+    
+
+
+    <div class="wrapper">
+        <header>
+            <h1>BOOK API</h1>
+        </header>
+
+        <div class="search-container">
+            <input type="text" placeholder="Search for title" id="search__input">
+            
+       
+        </div>
+
+        <main>
+
+        </main>
+
+    </div>
+
+
+    <!------------ OVERLAY ----------->
+
+    <div class="overlay hidden">
+        <div class="overlay-close">&#10005;</div>
+        <div class="bookInfoWrapper">
+            <div class="overlay__book-cover">
+                <h1 class="overlay__book-title"></h1>
+                <p class="overlay__author"></p>
+            </div>
+            <div class="overlay__book-info">
+                <div class="overlay__book-info__title-div">
+                    <h1 class="overlay__book-info__title">Title</h1>
+                    <h3 class="overlay__book-info__author">Author</h3>
+                </div>
+                <p class="overlay__book-info__summary">Summary</p>
+                <div class="overlay__book-info__data">
+                    <p class="book-info__data__txt">Audience: <span id="book-info__data__audience"></span></p>
+                    <p class="book-info__data__txt">First published: <span id="book-info__data__published"></span></p>
+                    <p class="book-info__data__txt">Pages: <span id="book-info__data__pages"></span></p>
+                    <p class="book-info__data__txt">Publisher: <span id="book-info__data__publisher"></span></p>
+                </div>
+                <button>Read it</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="./js/index.js"></script>
+    
+</body>
+</html>

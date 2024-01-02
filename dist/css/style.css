@@ -1,0 +1,147 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+}
+
+header {
+    width: 100%;
+    height: 100px;
+    background-color: #3E5962;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-container {
+    height: 80px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#search__input {
+    background-color: #dedfe1 ;
+    padding: 20px;
+    height: 40px;
+    width: 600px;
+    border: 0;
+    border-radius: 10px;
+    
+    
+
+}
+
+main {
+    max-width: 900px;
+    /* background-color: antiquewhite; */
+    margin: 2rem auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))  ;
+    gap: 20px;
+}
+
+.bookCover {
+    width: 200px;
+    height: 240px;
+}
+.bookCover:hover {
+    cursor: pointer;
+}
+
+
+
+/******* OVERLAY ******/
+.overlay {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+.overlay.hidden {
+    display: none;
+}
+
+.overlay-close {
+    position: absolute;
+    top: 15%;
+    right: 15%;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 40px;
+}
+.overlay-close:hover {
+    cursor: pointer;
+}
+
+.bookInfoWrapper {
+    /* width: 1440px;
+    height: 900px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.overlay__book-cover {
+    width: 390px;
+    height: 464px;
+    padding: 20px;
+   
+}
+
+.overlay__book-info {
+    width: 390px;
+    height: 464px;
+    padding: 0 20px 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.overlay__book-info {
+    margin-bottom: 10px;
+}
+.overlay__book-info__title {
+    color: rgba(255, 255, 255, 1);
+    margin-bottom: 10px;
+}
+.overlay__book-info__author {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+
+.overlay__book-info__data {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 10px;
+}
+
+.overlay__book-info__summary {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.book-info__data__txt {
+    color: rgba(255, 255, 255, 1);
+    padding: 5px;
+}
+span {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+button {
+    padding: 10px;
+}
+
