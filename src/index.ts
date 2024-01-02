@@ -14,8 +14,8 @@ const inputField: HTMLInputElement = document.querySelector("#search__input")
 
 
 
-function createBooks(obj: {color: string, title: string, author: string }): void {
-    const bookCover = document.createElement("div")
+function createBooks(obj: Book): void {
+    const bookCover: HTMLDivElement = document.createElement("div")
     bookCover.classList.add("bookCover")
     bookCover.style.backgroundColor = obj.color
     main.append(bookCover)
@@ -32,7 +32,7 @@ function createBooks(obj: {color: string, title: string, author: string }): void
 }
 
 
-function createBookInfo(obj: {color: string, title: string, author: string, plot: string, audience: string, year: string, pages: string, publisher: string}): void {
+function createBookInfo(obj: Book): void {
     const overlayBookCover = document.querySelector(".overlay__book-cover") as HTMLElement
     overlayBookCover.style.backgroundColor = obj.color
     const overlayBookTitle = document.querySelector(".overlay__book-title") as HTMLElement
@@ -87,15 +87,23 @@ async function getBooks() {
 getBooks()
 
 
-// Function for creating a single book with info
+
 async function getBook(index: number) {
+    try {
+        const response = await fetch(baseURL)
+        if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`)
+        }
 
-    const response = await fetch(baseURL)
-    const books: Book[] = await response.json()
-    const book: Book = books[index]
-    console.log(book)
+        const books: Book[] = await response.json()
+        const book: Book = books[index]
+        console.log(book)
 
-    createBookInfo(book)
+        createBookInfo(book)
+
+    } catch(error) {
+        console.error("Error fetching data", error)
+    }
 }
 
 
@@ -110,7 +118,6 @@ const overlayClose = (): void => {
         overlay.classList.toggle("hidden")
     })
 }
-
 
 function clickOnBook(): void {
     let bookCovers: NodeListOf<Element> = document.querySelectorAll(".bookCover")
@@ -127,14 +134,30 @@ function clickOnBook(): void {
 
 
 
-
-function searchBook() {
-    const inputVal = inputField.value
+// Function for search book by title
+async function searchBook() {
+    const inputVal: string = inputField.value
     console.log(inputVal)
 
+    try {
+        const response = await fetch(baseURL)
+        if (!response.ok) {
+            throw new Error (`Request failed with status ${response.status}`)
+        } 
+        const books: Book[] = await response.json()
+        console.log(books)
+        books.forEach((book, index) => {
+            if (book.title.toLowerCase() === inputVal) {
+                getBook(index)
+                overlayOpen()
+            }
+        })  
+    } catch(error) {
+        console.error("Error fetching data:", error)
+    }
 }
 
-
+// Search book on key press "enter"
 inputField.addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
         searchBook()

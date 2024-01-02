@@ -73,14 +73,21 @@ function getBooks() {
     });
 }
 getBooks();
-// Function for creating a single book with info
 function getBook(index) {
     return __awaiter(this, void 0, void 0, function* () {
-        const response = yield fetch(baseURL);
-        const books = yield response.json();
-        const book = books[index];
-        console.log(book);
-        createBookInfo(book);
+        try {
+            const response = yield fetch(baseURL);
+            if (!response.ok) {
+                throw new Error(`Request failed with status ${response.status}`);
+            }
+            const books = yield response.json();
+            const book = books[index];
+            console.log(book);
+            createBookInfo(book);
+        }
+        catch (error) {
+            console.error("Error fetching data", error);
+        }
     });
 }
 const overlayOpen = () => {
@@ -101,13 +108,33 @@ function clickOnBook() {
     });
     overlayClose();
 }
+// Function for search book by title
 function searchBook() {
-    const inputVal = inputField.value;
-    console.log(inputVal);
+    return __awaiter(this, void 0, void 0, function* () {
+        const inputVal = inputField.value;
+        console.log(inputVal);
+        try {
+            const response = yield fetch(baseURL);
+            if (!response.ok) {
+                throw new Error(`Request failed with status ${response.status}`);
+            }
+            const books = yield response.json();
+            console.log(books);
+            books.forEach((book, index) => {
+                if (book.title.toLowerCase() === inputVal) {
+                    getBook(index);
+                    overlayOpen();
+                }
+            });
+        }
+        catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    });
 }
+// Search book on key press "enter"
 inputField.addEventListener('keypress', function (event) {
     if (event.key === 'Enter') {
         searchBook();
     }
 });
-export {};

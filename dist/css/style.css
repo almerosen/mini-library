@@ -46,11 +46,13 @@ main {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))  ;
     gap: 20px;
+    place-items: center;
 }
 
 .bookCover {
     width: 200px;
     height: 240px;
+    background-color: linear-gradient(208deg);
 }
 .bookCover:hover {
     cursor: pointer;
@@ -127,6 +129,7 @@ main {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     padding: 10px;
+    background-color: rgba(196, 196, 196, 0.08);
 }
 
 .overlay__book-info__summary {
