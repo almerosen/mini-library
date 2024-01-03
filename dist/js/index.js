@@ -15,11 +15,15 @@ const bookInfoWrapper = document.querySelector(".bookInfoWrapper");
 const closeButton = document.querySelector(".overlay-close");
 const inputField = document.querySelector("#search__input");
 const searchButton = document.querySelector("#search__submit");
+// Function to create books on index page
 function createBooks(obj) {
     const bookCover = document.createElement("div");
     bookCover.classList.add("bookCover");
     bookCover.style.backgroundColor = obj.color;
     main.append(bookCover);
+    const border = document.createElement("div");
+    border.classList.add("border");
+    bookCover.append(border);
     const bookTitle = document.createElement("h3");
     bookTitle.classList.add("bookTitle");
     bookTitle.innerHTML = obj.title;
@@ -29,6 +33,7 @@ function createBooks(obj) {
     bookAuthor.innerText = obj.author;
     bookCover.append(bookAuthor);
 }
+// Function to create a single book with info...
 function createBookInfo(obj) {
     const overlayBookCover = document.querySelector(".overlay__book-cover");
     overlayBookCover.style.backgroundColor = obj.color;
@@ -51,7 +56,7 @@ function createBookInfo(obj) {
     const bookInfoPublisher = document.querySelector("#book-info__data__publisher");
     bookInfoPublisher.innerHTML = obj.publisher;
 }
-// Display all the books on index page:
+// Fetch and display all the books on index page:
 function getBooks() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -72,6 +77,7 @@ function getBooks() {
     });
 }
 getBooks();
+// Function to get a single book
 function getBook(index) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -89,14 +95,17 @@ function getBook(index) {
         }
     });
 }
+// Show overlay 'page'
 const overlayOpen = () => {
     overlay.classList.toggle("hidden");
 };
+// Hide overlay 
 const overlayClose = () => {
     closeButton.addEventListener('click', () => {
         overlay.classList.toggle("hidden");
     });
 };
+// Click on book function 
 function clickOnBook() {
     let bookCovers = document.querySelectorAll(".bookCover");
     bookCovers.forEach((book, index) => {
@@ -119,21 +128,21 @@ function searchBook() {
             }
             const books = yield response.json();
             console.log(books);
-            // let filteredBooks = books.filter((book) => {
-            //     return book.title.toLowerCase().includes(inputVal)
-            // })
-            // console.log(filteredBooks)
-            // filteredBooks.forEach((book, index) => {
-            //     console.log(book)
-            //     getBook(index)
-            //     overlayOpen()
-            // }) 
-            books.forEach((book, index) => {
-                if (book.title.toLowerCase().includes(inputVal)) {
-                    getBook(index);
-                    overlayOpen();
-                }
+            let filteredBooks = books.filter((book) => {
+                return book.title.toLowerCase().includes(inputVal);
             });
+            console.log(filteredBooks);
+            filteredBooks.forEach((book) => {
+                console.log(book);
+                createBookInfo(book);
+                overlayOpen();
+            });
+            // books.forEach((book, index) => {
+            //     if (book.title.toLowerCase().includes(inputVal)) {
+            //         getBook(index)
+            //         overlayOpen()
+            //     }
+            // })  
         }
         catch (error) {
             console.error("Error fetching data:", error);
@@ -147,6 +156,7 @@ inputField.addEventListener('keypress', (event) => {
         searchBook();
     }
 });
+// Search when clicking button in input field
 searchButton.addEventListener('click', () => {
     searchBook();
 });

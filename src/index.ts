@@ -14,12 +14,16 @@ const searchButton: HTMLButtonElement = document.querySelector("#search__submit"
 
 
 
-
+// Function to create books on index page
 function createBooks(obj: Book): void {
     const bookCover: HTMLDivElement = document.createElement("div")
     bookCover.classList.add("bookCover")
     bookCover.style.backgroundColor = obj.color
     main.append(bookCover)
+
+    const border = document.createElement("div")
+    border.classList.add("border")
+    bookCover.append(border)
 
     const bookTitle: HTMLHeadingElement = document.createElement("h3")
     bookTitle.classList.add("bookTitle")
@@ -32,7 +36,7 @@ function createBooks(obj: Book): void {
     bookCover.append(bookAuthor)   
 }
 
-
+// Function to create a single book with info...
 function createBookInfo(obj: Book): void {
     const overlayBookCover = document.querySelector(".overlay__book-cover") as HTMLElement
     overlayBookCover.style.backgroundColor = obj.color
@@ -64,7 +68,7 @@ function createBookInfo(obj: Book): void {
 }
 
 
-// Display all the books on index page:
+// Fetch and display all the books on index page:
 async function getBooks(): Promise<void> {
     try {
         const response = await fetch(baseURL)
@@ -88,7 +92,7 @@ async function getBooks(): Promise<void> {
 getBooks()
 
 
-
+// Function to get a single book
 async function getBook(index: number): Promise<void> {
     try {
         const response = await fetch(baseURL)
@@ -109,18 +113,18 @@ async function getBook(index: number): Promise<void> {
 
 
 
-
+// Show overlay 'page'
 const overlayOpen = (): void => {
     overlay.classList.toggle("hidden")
 }
-
+// Hide overlay 
 const overlayClose = (): void => {
     closeButton.addEventListener('click', () => {
         overlay.classList.toggle("hidden")
         
     })
 }
-
+// Click on book function 
 function clickOnBook(): void {
     let bookCovers: NodeListOf<Element> = document.querySelectorAll(".bookCover")
 
@@ -149,23 +153,23 @@ async function searchBook(): Promise<void> {
         const books: Book[] = await response.json()
         console.log(books)
 
-        // let filteredBooks = books.filter((book) => {
-        //     return book.title.toLowerCase().includes(inputVal)
-        // })
-        // console.log(filteredBooks)
-        // filteredBooks.forEach((book, index) => {
-        //     console.log(book)
-        //     getBook(index)
-        //     overlayOpen()
-        // }) 
+        let filteredBooks = books.filter((book) => {
+            return book.title.toLowerCase().includes(inputVal)
+        })
+        console.log(filteredBooks)
+        filteredBooks.forEach((book) => {
+            console.log(book)
+            createBookInfo(book)
+            overlayOpen()
+        }) 
 
         
-        books.forEach((book, index) => {
-            if (book.title.toLowerCase().includes(inputVal)) {
-                getBook(index)
-                overlayOpen()
-            }
-        })  
+        // books.forEach((book, index) => {
+        //     if (book.title.toLowerCase().includes(inputVal)) {
+        //         getBook(index)
+        //         overlayOpen()
+        //     }
+        // })  
     } catch(error) {
         console.error("Error fetching data:", error)
     }
@@ -178,7 +182,7 @@ inputField.addEventListener('keypress', (event) => {
         searchBook()
     }
 })
-
+// Search when clicking button in input field
 searchButton.addEventListener('click', () => {
     searchBook()
 })
