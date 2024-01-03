@@ -8,12 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const baseURL = "https://my-json-server.typicode.com/zocom-christoffer-wallenberg/books-api/books";
-let books = [];
+// let books: Book[] = []
 const main = document.querySelector("main");
 const overlay = document.querySelector(".overlay");
 const bookInfoWrapper = document.querySelector(".bookInfoWrapper");
 const closeButton = document.querySelector(".overlay-close");
 const inputField = document.querySelector("#search__input");
+const searchButton = document.querySelector("#search__submit");
 function createBooks(obj) {
     const bookCover = document.createElement("div");
     bookCover.classList.add("bookCover");
@@ -55,17 +56,15 @@ function getBooks() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const response = yield fetch(baseURL);
-            if (response.status === 200) {
-                const books = yield response.json();
-                console.log(books);
-                books.forEach((book) => {
-                    createBooks(book);
-                });
-                clickOnBook();
+            if (!response.ok) {
+                throw new Error(`Failed fetch data with status ${response.status}`);
             }
-            else {
-                throw Error("Response failed");
-            }
+            const books = yield response.json();
+            console.log(books);
+            books.forEach((book) => {
+                createBooks(book);
+            });
+            clickOnBook();
         }
         catch (error) {
             console.error(error);
@@ -111,7 +110,7 @@ function clickOnBook() {
 // Function for search book by title
 function searchBook() {
     return __awaiter(this, void 0, void 0, function* () {
-        const inputVal = inputField.value;
+        let inputVal = inputField.value;
         console.log(inputVal);
         try {
             const response = yield fetch(baseURL);
@@ -120,8 +119,17 @@ function searchBook() {
             }
             const books = yield response.json();
             console.log(books);
+            // let filteredBooks = books.filter((book) => {
+            //     return book.title.toLowerCase().includes(inputVal)
+            // })
+            // console.log(filteredBooks)
+            // filteredBooks.forEach((book, index) => {
+            //     console.log(book)
+            //     getBook(index)
+            //     overlayOpen()
+            // }) 
             books.forEach((book, index) => {
-                if (book.title.toLowerCase() === inputVal) {
+                if (book.title.toLowerCase().includes(inputVal)) {
                     getBook(index);
                     overlayOpen();
                 }
@@ -133,8 +141,12 @@ function searchBook() {
     });
 }
 // Search book on key press "enter"
-inputField.addEventListener('keypress', function (event) {
+inputField.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
+        event.preventDefault();
         searchBook();
     }
+});
+searchButton.addEventListener('click', () => {
+    searchBook();
 });

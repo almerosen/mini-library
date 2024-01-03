@@ -2,13 +2,14 @@ import { Book } from "./interface"
 
 const baseURL = "https://my-json-server.typicode.com/zocom-christoffer-wallenberg/books-api/books"
 
-let books: Book[] = []
+// let books: Book[] = []
 
 const main: HTMLElement = document.querySelector("main")
 const overlay: HTMLElement = document.querySelector(".overlay")
 const bookInfoWrapper: HTMLElement = document.querySelector(".bookInfoWrapper")
 const closeButton: HTMLButtonElement = document.querySelector(".overlay-close")
 const inputField: HTMLInputElement = document.querySelector("#search__input")
+const searchButton: HTMLButtonElement = document.querySelector("#search__submit")
 
 
 
@@ -20,12 +21,12 @@ function createBooks(obj: Book): void {
     bookCover.style.backgroundColor = obj.color
     main.append(bookCover)
 
-    const bookTitle = document.createElement("h3")
+    const bookTitle: HTMLHeadingElement = document.createElement("h3")
     bookTitle.classList.add("bookTitle")
     bookTitle.innerHTML = obj.title
     bookCover.append(bookTitle)
 
-    const bookAuthor = document.createElement("p")
+    const bookAuthor: HTMLParagraphElement = document.createElement("p")
     bookAuthor.classList.add("bookAuthor")
     bookAuthor.innerText = obj.author
     bookCover.append(bookAuthor)   
@@ -64,22 +65,22 @@ function createBookInfo(obj: Book): void {
 
 
 // Display all the books on index page:
-async function getBooks() {
+async function getBooks(): Promise<void> {
     try {
         const response = await fetch(baseURL)
-        if (response.status === 200) {
-            const books: Book[] = await response.json()
-            console.log(books)
-
-            books.forEach((book) => {
-                createBooks(book)
-            })
-        
-            clickOnBook()
-
-        } else {
-            throw Error("Response failed")
+        if (!response.ok) {
+            throw new Error(`Failed fetch data with status ${response.status}`)
         }
+
+        const books: Book[] = await response.json()
+        console.log(books)
+
+        books.forEach((book) => {
+            createBooks(book)
+        })
+        
+        clickOnBook()
+       
     } catch(error) {
         console.error(error)
         }   
@@ -88,7 +89,7 @@ getBooks()
 
 
 
-async function getBook(index: number) {
+async function getBook(index: number): Promise<void> {
     try {
         const response = await fetch(baseURL)
         if (!response.ok) {
@@ -116,6 +117,7 @@ const overlayOpen = (): void => {
 const overlayClose = (): void => {
     closeButton.addEventListener('click', () => {
         overlay.classList.toggle("hidden")
+        
     })
 }
 
@@ -135,8 +137,8 @@ function clickOnBook(): void {
 
 
 // Function for search book by title
-async function searchBook() {
-    const inputVal: string = inputField.value
+async function searchBook(): Promise<void> {
+    let inputVal: string = inputField.value
     console.log(inputVal)
 
     try {
@@ -146,8 +148,20 @@ async function searchBook() {
         } 
         const books: Book[] = await response.json()
         console.log(books)
+
+        // let filteredBooks = books.filter((book) => {
+        //     return book.title.toLowerCase().includes(inputVal)
+        // })
+        // console.log(filteredBooks)
+        // filteredBooks.forEach((book, index) => {
+        //     console.log(book)
+        //     getBook(index)
+        //     overlayOpen()
+        // }) 
+
+        
         books.forEach((book, index) => {
-            if (book.title.toLowerCase() === inputVal) {
+            if (book.title.toLowerCase().includes(inputVal)) {
                 getBook(index)
                 overlayOpen()
             }
@@ -158,10 +172,15 @@ async function searchBook() {
 }
 
 // Search book on key press "enter"
-inputField.addEventListener('keypress', function(event) {
+inputField.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
+        event.preventDefault()
         searchBook()
     }
+})
+
+searchButton.addEventListener('click', () => {
+    searchBook()
 })
 
 
