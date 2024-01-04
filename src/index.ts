@@ -174,13 +174,23 @@ function clickOnReadMoreButton(): void {
 }
 
 
+// Function for filter book by title
+function filterBooksBySearch(books: Book[], inputField: HTMLInputElement): void {
+    const inputVal: string = inputField.value
+    const filteredBooks: Book[] = books.filter((book) => {
+        return book.title.toLowerCase().includes(inputVal.toLowerCase())
+    })
+    console.log(filteredBooks)
+    filteredBooks.forEach((book) => {
+        console.log(book)
+        createBookInfo(book)
+        overlayOpen()
+    })
+}
 
 
-// Function for search book by title
+// Function for fetch books and then filter books by title name
 async function searchBook(): Promise<void> {
-    let inputVal: string = inputField.value
-    console.log(inputVal)
-
     try {
         const response = await fetch(baseURL)
         if (!response.ok) {
@@ -189,15 +199,17 @@ async function searchBook(): Promise<void> {
         const books: Book[] = await response.json()
         console.log(books)
 
-        let filteredBooks: Book[] = books.filter((book) => {
-            return book.title.toLowerCase().includes(inputVal)
-        })
-        console.log(filteredBooks)
-        filteredBooks.forEach((book) => {
-            console.log(book)
-            createBookInfo(book)
-            overlayOpen()
-        }) 
+        filterBooksBySearch(books, inputField)
+
+        // let filteredBooks: Book[] = books.filter((book) => {
+        //     return book.title.toLowerCase().includes(inputVal)
+        // })
+        // console.log(filteredBooks)
+        // filteredBooks.forEach((book) => {
+        //     console.log(book)
+        //     createBookInfo(book)
+        //     overlayOpen()
+        // }) 
 
         
         // books.forEach((book, index) => {

@@ -145,11 +145,22 @@ function clickOnReadMoreButton() {
         });
     });
 }
-// Function for search book by title
+// Function for filter book by title
+function filterBooksBySearch(books, inputField) {
+    const inputVal = inputField.value;
+    const filteredBooks = books.filter((book) => {
+        return book.title.toLowerCase().includes(inputVal.toLowerCase());
+    });
+    console.log(filteredBooks);
+    filteredBooks.forEach((book) => {
+        console.log(book);
+        createBookInfo(book);
+        overlayOpen();
+    });
+}
+// Function for fetch books and then filter books by title name
 function searchBook() {
     return __awaiter(this, void 0, void 0, function* () {
-        let inputVal = inputField.value;
-        console.log(inputVal);
         try {
             const response = yield fetch(baseURL);
             if (!response.ok) {
@@ -157,15 +168,16 @@ function searchBook() {
             }
             const books = yield response.json();
             console.log(books);
-            let filteredBooks = books.filter((book) => {
-                return book.title.toLowerCase().includes(inputVal);
-            });
-            console.log(filteredBooks);
-            filteredBooks.forEach((book) => {
-                console.log(book);
-                createBookInfo(book);
-                overlayOpen();
-            });
+            filterBooksBySearch(books, inputField);
+            // let filteredBooks: Book[] = books.filter((book) => {
+            //     return book.title.toLowerCase().includes(inputVal)
+            // })
+            // console.log(filteredBooks)
+            // filteredBooks.forEach((book) => {
+            //     console.log(book)
+            //     createBookInfo(book)
+            //     overlayOpen()
+            // }) 
             // books.forEach((book, index) => {
             //     if (book.title.toLowerCase().includes(inputVal)) {
             //         getBook(index)
