@@ -106,16 +106,16 @@ async function getBooks(url: string): Promise<void> {
         clickOnReadMoreButton()
        
     } catch(error) {
-        console.error(error)
+        console.error("Error fetching data", error)
         }   
 }
 getBooks(baseURL)
 
 
 // Function to get a single book
-async function getBook(index: number): Promise<void> {
+async function getBook(url: string, index: number): Promise<void> {
     try {
-        const response = await fetch(baseURL)
+        const response = await fetch(url)
         if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}`)
         }
@@ -152,7 +152,7 @@ function clickOnBook(): void {
 
     bookCovers.forEach((book, index) => {
         book.addEventListener('click', () => {
-            getBook(index)
+            getBook(baseURL, index)
             overlayOpen()
         })
     })
@@ -164,7 +164,7 @@ function clickOnReadMoreButton(): void {
 
     buttons.forEach((button, index) => {
         button.addEventListener('click', () => {
-            getBook(index)
+            getBook(baseURL, index)
             overlayOpen()
         })
     })

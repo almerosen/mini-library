@@ -89,16 +89,16 @@ function getBooks(url) {
             clickOnReadMoreButton();
         }
         catch (error) {
-            console.error(error);
+            console.error("Error fetching data", error);
         }
     });
 }
 getBooks(baseURL);
 // Function to get a single book
-function getBook(index) {
+function getBook(url, index) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const response = yield fetch(baseURL);
+            const response = yield fetch(url);
             if (!response.ok) {
                 throw new Error(`Request failed with status ${response.status}`);
             }
@@ -127,7 +127,7 @@ function clickOnBook() {
     let bookCovers = document.querySelectorAll(".bookCover");
     bookCovers.forEach((book, index) => {
         book.addEventListener('click', () => {
-            getBook(index);
+            getBook(baseURL, index);
             overlayOpen();
         });
     });
@@ -137,7 +137,7 @@ function clickOnReadMoreButton() {
     let buttons = document.querySelectorAll(".readMoreButton");
     buttons.forEach((button, index) => {
         button.addEventListener('click', () => {
-            getBook(index);
+            getBook(baseURL, index);
             overlayOpen();
         });
     });
