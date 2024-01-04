@@ -15,12 +15,16 @@ const bookInfoWrapper = document.querySelector(".bookInfoWrapper");
 const closeButton = document.querySelector(".overlay-close");
 const inputField = document.querySelector("#search__input");
 const searchButton = document.querySelector("#search__submit");
+const readMoreButton = document.querySelector(".readMoreButton");
 // Function to create books on index page
 function createBooks(obj) {
+    const productPanel = document.createElement("div");
+    productPanel.classList.add("productPanel");
+    main.append(productPanel);
     const bookCover = document.createElement("div");
     bookCover.classList.add("bookCover");
     bookCover.style.backgroundColor = obj.color;
-    main.append(bookCover);
+    productPanel.append(bookCover);
     const border = document.createElement("div");
     border.classList.add("border");
     bookCover.append(border);
@@ -32,6 +36,21 @@ function createBooks(obj) {
     bookAuthor.classList.add("bookAuthor");
     bookAuthor.innerText = obj.author;
     bookCover.append(bookAuthor);
+    const productPanelTextWrapper = document.createElement("div");
+    productPanelTextWrapper.classList.add("product-panel-text-wrapper");
+    productPanel.append(productPanelTextWrapper);
+    const productPanelTitle = document.createElement("h3");
+    productPanelTitle.classList.add("productPanel-title");
+    productPanelTitle.innerHTML = obj.title;
+    productPanelTextWrapper.append(productPanelTitle);
+    const productPanelAuthor = document.createElement("p");
+    productPanelAuthor.classList.add("productPanel-author");
+    productPanelAuthor.innerHTML = obj.author;
+    productPanelTextWrapper.append(productPanelAuthor);
+    const readMoreButton = document.createElement("button");
+    readMoreButton.classList.add("readMoreButton");
+    readMoreButton.innerHTML = "Read more";
+    productPanel.append(readMoreButton);
 }
 // Function to create a single book with info...
 function createBookInfo(obj) {
@@ -70,6 +89,7 @@ function getBooks() {
                 createBooks(book);
             });
             clickOnBook();
+            clickOnReadMoreButton();
         }
         catch (error) {
             console.error(error);
@@ -115,6 +135,15 @@ function clickOnBook() {
         });
     });
     overlayClose();
+}
+function clickOnReadMoreButton() {
+    let buttons = document.querySelectorAll(".readMoreButton");
+    buttons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            getBook(index);
+            overlayOpen();
+        });
+    });
 }
 // Function for search book by title
 function searchBook() {

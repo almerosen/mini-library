@@ -10,16 +10,21 @@ const bookInfoWrapper: HTMLElement = document.querySelector(".bookInfoWrapper")
 const closeButton: HTMLButtonElement = document.querySelector(".overlay-close")
 const inputField: HTMLInputElement = document.querySelector("#search__input")
 const searchButton: HTMLButtonElement = document.querySelector("#search__submit")
+const readMoreButton: HTMLButtonElement = document.querySelector(".readMoreButton")
 
 
 
 
 // Function to create books on index page
 function createBooks(obj: Book): void {
+    const productPanel: HTMLDivElement = document.createElement("div")
+    productPanel.classList.add("productPanel")
+    main.append(productPanel)
+
     const bookCover: HTMLDivElement = document.createElement("div")
     bookCover.classList.add("bookCover")
     bookCover.style.backgroundColor = obj.color
-    main.append(bookCover)
+    productPanel.append(bookCover)
 
     const border = document.createElement("div")
     border.classList.add("border")
@@ -33,7 +38,26 @@ function createBooks(obj: Book): void {
     const bookAuthor: HTMLParagraphElement = document.createElement("p")
     bookAuthor.classList.add("bookAuthor")
     bookAuthor.innerText = obj.author
-    bookCover.append(bookAuthor)   
+    bookCover.append(bookAuthor)  
+
+    const productPanelTextWrapper: HTMLDivElement = document.createElement("div")
+    productPanelTextWrapper.classList.add("product-panel-text-wrapper")
+    productPanel.append(productPanelTextWrapper)
+
+    const productPanelTitle: HTMLHeadingElement = document.createElement("h3")
+    productPanelTitle.classList.add("productPanel-title")
+    productPanelTitle.innerHTML = obj.title
+    productPanelTextWrapper.append(productPanelTitle)
+
+    const productPanelAuthor: HTMLParagraphElement = document.createElement("p")
+    productPanelAuthor.classList.add("productPanel-author")
+    productPanelAuthor.innerHTML = obj.author
+    productPanelTextWrapper.append(productPanelAuthor)
+    
+    const readMoreButton: HTMLButtonElement = document.createElement("button")
+    readMoreButton.classList.add("readMoreButton")
+    readMoreButton.innerHTML = "Read more"
+    productPanel.append(readMoreButton)
 }
 
 // Function to create a single book with info...
@@ -84,6 +108,7 @@ async function getBooks(): Promise<void> {
         })
         
         clickOnBook()
+        clickOnReadMoreButton()
        
     } catch(error) {
         console.error(error)
@@ -137,6 +162,17 @@ function clickOnBook(): void {
     overlayClose()
 }
 
+function clickOnReadMoreButton(): void {
+    let buttons = document.querySelectorAll(".readMoreButton")
+
+    buttons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            getBook(index)
+            overlayOpen()
+        })
+    })
+}
+
 
 
 
@@ -153,7 +189,7 @@ async function searchBook(): Promise<void> {
         const books: Book[] = await response.json()
         console.log(books)
 
-        let filteredBooks = books.filter((book) => {
+        let filteredBooks: Book[] = books.filter((book) => {
             return book.title.toLowerCase().includes(inputVal)
         })
         console.log(filteredBooks)
