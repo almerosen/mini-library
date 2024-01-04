@@ -2,16 +2,11 @@ import { Book } from "./interface"
 
 const baseURL = "https://my-json-server.typicode.com/zocom-christoffer-wallenberg/books-api/books"
 
-// let books: Book[] = []
-
 const main: HTMLElement = document.querySelector("main")
 const overlay: HTMLElement = document.querySelector(".overlay")
-const bookInfoWrapper: HTMLElement = document.querySelector(".bookInfoWrapper")
 const closeButton: HTMLButtonElement = document.querySelector(".overlay-close")
 const inputField: HTMLInputElement = document.querySelector("#search__input")
 const searchButton: HTMLButtonElement = document.querySelector("#search__submit")
-const readMoreButton: HTMLButtonElement = document.querySelector(".readMoreButton")
-
 
 
 
@@ -21,12 +16,12 @@ function createBooks(obj: Book): void {
     productPanel.classList.add("productPanel")
     main.append(productPanel)
 
-    const bookCover: HTMLDivElement = document.createElement("div")
+    const bookCover: HTMLElement = document.createElement("div")
     bookCover.classList.add("bookCover")
-    bookCover.style.backgroundColor = obj.color
+    bookCover.style.background = `linear-gradient(208deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.00) 92.13%), ${obj.color}`
     productPanel.append(bookCover)
 
-    const border = document.createElement("div")
+    const border: HTMLDivElement = document.createElement("div")
     border.classList.add("border")
     bookCover.append(border)
 
@@ -56,14 +51,14 @@ function createBooks(obj: Book): void {
     
     const readMoreButton: HTMLButtonElement = document.createElement("button")
     readMoreButton.classList.add("readMoreButton")
-    readMoreButton.innerHTML = "Read more"
+    readMoreButton.innerHTML = "Quick look"
     productPanel.append(readMoreButton)
 }
 
 // Function to create a single book with info...
 function createBookInfo(obj: Book): void {
     const overlayBookCover = document.querySelector(".overlay__book-cover") as HTMLElement
-    overlayBookCover.style.backgroundColor = obj.color
+    overlayBookCover.style.background = `linear-gradient(208deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.00) 92.13%), ${obj.color}`
     const overlayBookTitle = document.querySelector(".overlay__book-title") as HTMLElement
     overlayBookTitle.innerHTML = obj.title
     const overlayAuthor = document.querySelector(".overlay__author") as HTMLElement
@@ -93,9 +88,9 @@ function createBookInfo(obj: Book): void {
 
 
 // Fetch and display all the books on index page:
-async function getBooks(): Promise<void> {
+async function getBooks(url: string): Promise<void> {
     try {
-        const response = await fetch(baseURL)
+        const response = await fetch(url)
         if (!response.ok) {
             throw new Error(`Failed fetch data with status ${response.status}`)
         }
@@ -114,7 +109,7 @@ async function getBooks(): Promise<void> {
         console.error(error)
         }   
 }
-getBooks()
+getBooks(baseURL)
 
 
 // Function to get a single book
@@ -149,6 +144,8 @@ const overlayClose = (): void => {
         
     })
 }
+
+
 // Click on book function 
 function clickOnBook(): void {
     let bookCovers: NodeListOf<Element> = document.querySelectorAll(".bookCover")
@@ -174,7 +171,7 @@ function clickOnReadMoreButton(): void {
 }
 
 
-// Function for filter book by title
+// Search Function for filter book by title
 function filterBooksBySearch(books: Book[], inputField: HTMLInputElement): void {
     const inputVal: string = inputField.value
     const filteredBooks: Book[] = books.filter((book) => {
@@ -184,15 +181,15 @@ function filterBooksBySearch(books: Book[], inputField: HTMLInputElement): void 
     filteredBooks.forEach((book) => {
         console.log(book)
         createBookInfo(book)
-        overlayOpen()
     })
+    overlayOpen()
 }
 
 
 // Function for fetch books and then filter books by title name
-async function searchBook(): Promise<void> {
+async function searchBook(url: string): Promise<void> {
     try {
-        const response = await fetch(baseURL)
+        const response = await fetch(url)
         if (!response.ok) {
             throw new Error (`Request failed with status ${response.status}`)
         } 
@@ -201,23 +198,6 @@ async function searchBook(): Promise<void> {
 
         filterBooksBySearch(books, inputField)
 
-        // let filteredBooks: Book[] = books.filter((book) => {
-        //     return book.title.toLowerCase().includes(inputVal)
-        // })
-        // console.log(filteredBooks)
-        // filteredBooks.forEach((book) => {
-        //     console.log(book)
-        //     createBookInfo(book)
-        //     overlayOpen()
-        // }) 
-
-        
-        // books.forEach((book, index) => {
-        //     if (book.title.toLowerCase().includes(inputVal)) {
-        //         getBook(index)
-        //         overlayOpen()
-        //     }
-        // })  
     } catch(error) {
         console.error("Error fetching data:", error)
     }
@@ -227,12 +207,12 @@ async function searchBook(): Promise<void> {
 inputField.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
         event.preventDefault()
-        searchBook()
+        searchBook(baseURL)
     }
 })
 // Search when clicking button in input field
 searchButton.addEventListener('click', () => {
-    searchBook()
+    searchBook(baseURL)
 })
 
 

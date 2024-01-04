@@ -8,14 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const baseURL = "https://my-json-server.typicode.com/zocom-christoffer-wallenberg/books-api/books";
-// let books: Book[] = []
 const main = document.querySelector("main");
 const overlay = document.querySelector(".overlay");
-const bookInfoWrapper = document.querySelector(".bookInfoWrapper");
 const closeButton = document.querySelector(".overlay-close");
 const inputField = document.querySelector("#search__input");
 const searchButton = document.querySelector("#search__submit");
-const readMoreButton = document.querySelector(".readMoreButton");
 // Function to create books on index page
 function createBooks(obj) {
     const productPanel = document.createElement("div");
@@ -23,7 +20,7 @@ function createBooks(obj) {
     main.append(productPanel);
     const bookCover = document.createElement("div");
     bookCover.classList.add("bookCover");
-    bookCover.style.backgroundColor = obj.color;
+    bookCover.style.background = `linear-gradient(208deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.00) 92.13%), ${obj.color}`;
     productPanel.append(bookCover);
     const border = document.createElement("div");
     border.classList.add("border");
@@ -49,13 +46,13 @@ function createBooks(obj) {
     productPanelTextWrapper.append(productPanelAuthor);
     const readMoreButton = document.createElement("button");
     readMoreButton.classList.add("readMoreButton");
-    readMoreButton.innerHTML = "Read more";
+    readMoreButton.innerHTML = "Quick look";
     productPanel.append(readMoreButton);
 }
 // Function to create a single book with info...
 function createBookInfo(obj) {
     const overlayBookCover = document.querySelector(".overlay__book-cover");
-    overlayBookCover.style.backgroundColor = obj.color;
+    overlayBookCover.style.background = `linear-gradient(208deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.00) 92.13%), ${obj.color}`;
     const overlayBookTitle = document.querySelector(".overlay__book-title");
     overlayBookTitle.innerHTML = obj.title;
     const overlayAuthor = document.querySelector(".overlay__author");
@@ -76,10 +73,10 @@ function createBookInfo(obj) {
     bookInfoPublisher.innerHTML = obj.publisher;
 }
 // Fetch and display all the books on index page:
-function getBooks() {
+function getBooks(url) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const response = yield fetch(baseURL);
+            const response = yield fetch(url);
             if (!response.ok) {
                 throw new Error(`Failed fetch data with status ${response.status}`);
             }
@@ -96,7 +93,7 @@ function getBooks() {
         }
     });
 }
-getBooks();
+getBooks(baseURL);
 // Function to get a single book
 function getBook(index) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -145,7 +142,7 @@ function clickOnReadMoreButton() {
         });
     });
 }
-// Function for filter book by title
+// Search Function for filter book by title
 function filterBooksBySearch(books, inputField) {
     const inputVal = inputField.value;
     const filteredBooks = books.filter((book) => {
@@ -155,35 +152,20 @@ function filterBooksBySearch(books, inputField) {
     filteredBooks.forEach((book) => {
         console.log(book);
         createBookInfo(book);
-        overlayOpen();
     });
+    overlayOpen();
 }
 // Function for fetch books and then filter books by title name
-function searchBook() {
+function searchBook(url) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const response = yield fetch(baseURL);
+            const response = yield fetch(url);
             if (!response.ok) {
                 throw new Error(`Request failed with status ${response.status}`);
             }
             const books = yield response.json();
             console.log(books);
             filterBooksBySearch(books, inputField);
-            // let filteredBooks: Book[] = books.filter((book) => {
-            //     return book.title.toLowerCase().includes(inputVal)
-            // })
-            // console.log(filteredBooks)
-            // filteredBooks.forEach((book) => {
-            //     console.log(book)
-            //     createBookInfo(book)
-            //     overlayOpen()
-            // }) 
-            // books.forEach((book, index) => {
-            //     if (book.title.toLowerCase().includes(inputVal)) {
-            //         getBook(index)
-            //         overlayOpen()
-            //     }
-            // })  
         }
         catch (error) {
             console.error("Error fetching data:", error);
@@ -194,10 +176,10 @@ function searchBook() {
 inputField.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
         event.preventDefault();
-        searchBook();
+        searchBook(baseURL);
     }
 });
 // Search when clicking button in input field
 searchButton.addEventListener('click', () => {
-    searchBook();
+    searchBook(baseURL);
 });
