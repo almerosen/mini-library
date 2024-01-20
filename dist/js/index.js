@@ -10,68 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const baseURL = "https://my-json-server.typicode.com/zocom-christoffer-wallenberg/books-api/books";
 const main = document.querySelector("main");
 const overlay = document.querySelector(".overlay");
-const closeButton = document.querySelector(".overlay-close");
 const inputField = document.querySelector("#search__input");
 const searchButton = document.querySelector("#search__submit");
-// Function to create books on index page
-function createBooks(obj) {
-    const productPanel = document.createElement("div");
-    productPanel.classList.add("productPanel");
-    main.append(productPanel);
-    const bookCover = document.createElement("div");
-    bookCover.classList.add("bookCover");
-    bookCover.style.background = `linear-gradient(208deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.00) 92.13%), ${obj.color}`;
-    productPanel.append(bookCover);
-    const border = document.createElement("div");
-    border.classList.add("border");
-    bookCover.append(border);
-    const bookTitle = document.createElement("h3");
-    bookTitle.classList.add("bookTitle");
-    bookTitle.innerHTML = obj.title;
-    bookCover.append(bookTitle);
-    const bookAuthor = document.createElement("p");
-    bookAuthor.classList.add("bookAuthor");
-    bookAuthor.innerText = obj.author;
-    bookCover.append(bookAuthor);
-    const productPanelTextWrapper = document.createElement("div");
-    productPanelTextWrapper.classList.add("product-panel-text-wrapper");
-    productPanel.append(productPanelTextWrapper);
-    const productPanelTitle = document.createElement("h3");
-    productPanelTitle.classList.add("productPanel-title");
-    productPanelTitle.innerHTML = obj.title;
-    productPanelTextWrapper.append(productPanelTitle);
-    const productPanelAuthor = document.createElement("p");
-    productPanelAuthor.classList.add("productPanel-author");
-    productPanelAuthor.innerHTML = obj.author;
-    productPanelTextWrapper.append(productPanelAuthor);
-    const readMoreButton = document.createElement("button");
-    readMoreButton.classList.add("readMoreButton");
-    readMoreButton.innerHTML = "Quick look";
-    productPanel.append(readMoreButton);
-}
-// Function to create a single book with info...
-function createBookInfo(obj) {
-    const overlayBookCover = document.querySelector(".overlay__book-cover");
-    overlayBookCover.style.background = `linear-gradient(208deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.00) 92.13%), ${obj.color}`;
-    const overlayBookTitle = document.querySelector(".overlay__book-title");
-    overlayBookTitle.innerHTML = obj.title;
-    const overlayAuthor = document.querySelector(".overlay__author");
-    overlayAuthor.innerHTML = obj.author;
-    const bookInfoTitle = document.querySelector(".overlay__book-info__title");
-    bookInfoTitle.innerHTML = obj.title;
-    const bookInfoAuthor = document.querySelector(".overlay__book-info__author");
-    bookInfoAuthor.innerHTML = obj.author;
-    const bookInfoPlot = document.querySelector(".overlay__book-info__summary");
-    bookInfoPlot.innerHTML = obj.plot;
-    const bookInfoAudience = document.querySelector("#book-info__data__audience");
-    bookInfoAudience.innerHTML = obj.audience;
-    const bookInfoPublished = document.querySelector("#book-info__data__published");
-    bookInfoPublished.innerHTML = obj.year;
-    const bookInfoPages = document.querySelector("#book-info__data__pages");
-    bookInfoPages.innerHTML = obj.pages;
-    const bookInfoPublisher = document.querySelector("#book-info__data__publisher");
-    bookInfoPublisher.innerHTML = obj.publisher;
-}
 // Fetch and display all the books on index page:
 function getBooks(url) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -82,8 +22,24 @@ function getBooks(url) {
             }
             const books = yield response.json();
             console.log(books);
-            books.forEach((book) => {
-                createBooks(book);
+            books.map((obj) => {
+                main.innerHTML +=
+                    `
+            <div class="productPanel">
+                <div class="bookCover" data-id="${obj.id}" style="background: linear-gradient(208deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.00) 92.13%), ${obj.color}">
+                    <div class="border"></div>
+                    <h3 class="bookTitle">${obj.title}</h3>
+                    <p class="bookAuthor">${obj.author}</p>
+                </div>
+        
+                <div class="product-panel-text-wrapper">
+                    <h3 class="productPanel-title">${obj.title}</h3>
+                    <p class="productPanel-author">${obj.author}</p>
+                </div>
+        
+                <button class="readMoreButton" data-id="${obj.id}">Quick look</button>
+            </div>
+            `;
             });
             clickOnBook();
             clickOnReadMoreButton();
@@ -95,17 +51,41 @@ function getBooks(url) {
 }
 getBooks(baseURL);
 // Function to get a single book
-function getBook(url, index) {
+function getBook(url, bookId) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const response = yield fetch(url);
+            const response = yield fetch(`${url}/${bookId}`);
             if (!response.ok) {
                 throw new Error(`Request failed with status ${response.status}`);
             }
-            const books = yield response.json();
-            const book = books[index];
-            console.log(book);
-            createBookInfo(book);
+            const data = yield response.json();
+            console.log(data);
+            overlay.innerHTML = "";
+            overlay.innerHTML +=
+                `
+            <div class="overlay-close">&#10005;</div>
+            <div class="bookInfoWrapper">
+                <div class="overlay__book-cover" style="background: linear-gradient(208deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.00) 92.13%), ${data.color}">
+                    <div class="overlay__book-info__border"></div>
+                    <h1 class="overlay__book-title">${data.title}</h1>
+                    <p class="overlay__author">${data.author}</p>
+                </div>
+                <div class="overlay__book-info">
+                    <div class="overlay__book-info__title-div">
+                        <h1 class="overlay__book-info__title">${data.title}</h1>
+                        <h3 class="overlay__book-info__author">${data.author}</h3>
+                    </div>
+                    <p class="overlay__book-info__summary">${data.plot}</p>
+                    <div class="overlay__book-info__data">
+                        <p class="book-info__data__txt">Audience: <span id="book-info__data__audience">${data.audience}</span></p>
+                        <p class="book-info__data__txt">First published: <span id="book-info__data__published">${data.year}</span></p>
+                        <p class="book-info__data__txt">Pages: <span id="book-info__data__pages">${data.pages}</span></p>
+                        <p class="book-info__data__txt">Publisher: <span id="book-info__data__publisher">${data.publisher}</span></p>
+                    </div>
+                    <button>Read it</button>
+                </div>
+            </div>
+            `;
         }
         catch (error) {
             console.error("Error fetching data", error);
@@ -114,32 +94,36 @@ function getBook(url, index) {
 }
 // Show overlay 'page'
 const overlayOpen = () => {
-    overlay.classList.toggle("hidden");
+    overlay.classList.toggle("visible");
 };
 // Hide overlay 
-const overlayClose = () => {
-    closeButton.addEventListener('click', () => {
-        overlay.classList.toggle("hidden");
+function overlayClose() {
+    const closeButton = document.querySelector(".overlay-close");
+    closeButton.addEventListener("click", () => {
+        overlay.classList.remove("visible");
     });
-};
+}
 // Click on book function 
 function clickOnBook() {
     let bookCovers = document.querySelectorAll(".bookCover");
-    bookCovers.forEach((book, index) => {
-        book.addEventListener('click', () => {
-            getBook(baseURL, index);
+    bookCovers.forEach((book) => {
+        book.addEventListener('click', () => __awaiter(this, void 0, void 0, function* () {
+            const bookId = +book.getAttribute("data-id");
+            yield getBook(baseURL, bookId);
             overlayOpen();
-        });
+            overlayClose();
+        }));
     });
-    overlayClose();
 }
 function clickOnReadMoreButton() {
     let buttons = document.querySelectorAll(".readMoreButton");
-    buttons.forEach((button, index) => {
-        button.addEventListener('click', () => {
-            getBook(baseURL, index);
+    buttons.forEach((button) => {
+        button.addEventListener('click', () => __awaiter(this, void 0, void 0, function* () {
+            const bookId = +button.getAttribute("data-id");
+            yield getBook(baseURL, bookId);
             overlayOpen();
-        });
+            overlayClose();
+        }));
     });
 }
 // Search Function for filter book by title
@@ -149,11 +133,37 @@ function filterBooksBySearch(books, inputField) {
         return book.title.toLowerCase().includes(inputVal.toLowerCase());
     });
     console.log(filteredBooks);
+    // Render close button in overlay
+    overlay.innerHTML = `<div class="overlay-close">&#10005;</div>`;
+    // Render the filtered books in the overlay
     filteredBooks.forEach((book) => {
-        console.log(book);
-        createBookInfo(book);
+        overlay.innerHTML +=
+            `
+        <div class="bookInfoWrapper">
+            <div class="overlay__book-cover" style="background: linear-gradient(208deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.00) 92.13%), ${book.color}">
+                <div class="overlay__book-info__border"></div>
+                <h1 class="overlay__book-title">${book.title}</h1>
+                <p class="overlay__author">${book.author}</p>
+            </div>
+            <div class="overlay__book-info">
+                <div class="overlay__book-info__title-div">
+                    <h1 class="overlay__book-info__title">${book.title}</h1>
+                    <h3 class="overlay__book-info__author">${book.author}</h3>
+                </div>
+                <p class="overlay__book-info__summary">${book.plot}</p>
+                <div class="overlay__book-info__data">
+                    <p class="book-info__data__txt">Audience: <span id="book-info__data__audience">${book.audience}</span></p>
+                    <p class="book-info__data__txt">First published: <span id="book-info__data__published">${book.year}</span></p>
+                    <p class="book-info__data__txt">Pages: <span id="book-info__data__pages">${book.pages}</span></p>
+                    <p class="book-info__data__txt">Publisher: <span id="book-info__data__publisher">${book.publisher}</span></p>
+                </div>
+                <button>Read it</button>
+            </div>
+        </div>
+        `;
     });
     overlayOpen();
+    overlayClose();
 }
 // Function for fetch books and then filter books by title name
 function searchBook(url) {
