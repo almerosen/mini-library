@@ -21,8 +21,7 @@ async function getBooks(url: string): Promise<void> {
         const books: Book[] = await response.json()
         console.log(books)
 
-        books.map((obj) => {
-            main.innerHTML += 
+        main.innerHTML = books.map((obj) => 
             `
             <div class="productPanel">
                 <div class="bookCover" data-id="${obj.id}" style="background: linear-gradient(208deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.00) 92.13%), ${obj.color}">
@@ -39,7 +38,7 @@ async function getBooks(url: string): Promise<void> {
                 <button class="readMoreButton" data-id="${obj.id}">Quick look</button>
             </div>
             `
-        })
+        ).join("")
         
         clickOnBook()
         clickOnReadMoreButton()
@@ -140,7 +139,7 @@ function clickOnReadMoreButton(): void {
 
 
 // Search Function for filter book by title
-function filterBooksBySearch(books, inputField) {
+function filterBooksBySearch(books: Book[], inputField: HTMLInputElement) {
     const inputVal = inputField.value;
     const filteredBooks = books.filter((book) => {
         return book.title.toLowerCase().includes(inputVal.toLowerCase());
