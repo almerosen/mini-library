@@ -58,7 +58,7 @@ async function getBook(url: string, bookId: number): Promise<void> {
             throw new Error(`Request failed with status ${response.status}`)
         }
 
-        const data = await response.json()
+        const data: Book = await response.json()
         console.log(data)
 
         overlay.innerHTML = ""
